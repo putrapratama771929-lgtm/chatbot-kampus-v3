@@ -1,0 +1,229 @@
+/* ============================================
+   ANIMATIONS.CSS — Keyframes & Transitions
+   ============================================ */
+
+/* === Fade In === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* === Fade In Up (for scroll reveal) === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Fade In Down === */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Slide Up (for chat messages) === */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Slide In Left (bot bubble) === */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* === Slide In Right (user bubble) === */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* === Scale In === */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* === Bounce (typing indicator dots) === */
+@keyframes bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-8px);
+  }
+}
+
+/* === Pulse (floating button) === */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--accent-glow-strong);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+/* === Glow Pulse === */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: var(--shadow-glow);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--accent-glow-strong), 0 0 80px var(--accent-glow);
+  }
+}
+
+/* === Float (decorative orbs) === */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(10px, -20px);
+  }
+  50% {
+    transform: translate(-5px, -10px);
+  }
+  75% {
+    transform: translate(-15px, -25px);
+  }
+}
+
+/* === Spin === */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* === Shimmer (loading placeholder) === */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* === Animation Classes === */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.4s ease forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease forwards;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.4s ease forwards;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.4s ease forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s var(--transition-spring) forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+.animate-glow {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* === Scroll Reveal (initially hidden, JS adds .revealed) === */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for child elements */
+.scroll-reveal.delay-1 { transition-delay: 0.1s; }
+.scroll-reveal.delay-2 { transition-delay: 0.2s; }
+.scroll-reveal.delay-3 { transition-delay: 0.3s; }
+.scroll-reveal.delay-4 { transition-delay: 0.4s; }
+
+/* === Reduced Motion Preference === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

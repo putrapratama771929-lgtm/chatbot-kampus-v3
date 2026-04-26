@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot Polimdo — Asisten Virtual Kampus Politeknik Negeri Manado</title>
+  <meta name="description" content="Asisten virtual kampus Politeknik Negeri Manado. Dapatkan informasi jurusan, biaya kuliah, pendaftaran, dan beasiswa dengan cepat.">
+  <meta name="keywords" content="Polimdo, Politeknik Negeri Manado, chatbot, pendaftaran, jurusan, biaya kuliah">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/landing.css">
+
+  <!-- Theme (load early to prevent flash) -->
+  <script src="js/theme.js"></script>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="#" class="navbar-brand">
+        <span class="navbar-brand-icon">🤖</span>
+        <span>Chatbot Polimdo</span>
+      </a>
+
+      <div class="navbar-nav">
+        <a href="#tentang" class="navbar-link">Tentang</a>
+        <a href="#faq" class="navbar-link">FAQ</a>
+      </div>
+
+      <div class="navbar-actions">
+        <button class="btn-icon theme-toggle" aria-label="Toggle tema">☀️</button>
+        <a href="chat.html" class="btn btn-primary btn-sm">💬 Mulai Chat</a>
+
+        <!-- Hamburger (mobile) -->
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="#tentang" class="mobile-nav-link">Tentang</a>
+    <a href="#faq" class="mobile-nav-link">FAQ</a>
+    <a href="chat.html" class="mobile-nav-link" style="color: var(--accent);">💬 Mulai Chat</a>
+    <button class="btn-icon theme-toggle" aria-label="Toggle tema" style="font-size: 24px;">☀️</button>
+  </div>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-gradient"></div>
+      <div class="hero-orb hero-orb-1 animate-float"></div>
+      <div class="hero-orb hero-orb-2 animate-float"></div>
+      <div class="hero-orb hero-orb-3 animate-float"></div>
+    </div>
+
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot" style="background: var(--success);"></span>
+        Online 24/7 — Siap Membantu
+      </div>
+
+      <h1 class="hero-title">
+        Asisten Virtual<br>
+        <span class="gradient-text">Kampus Polimdo</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Dapatkan informasi seputar jurusan, biaya kuliah, pendaftaran, dan beasiswa di Politeknik Negeri Manado. Cukup tanya bot kami!
+      </p>
+
+      <div class="hero-actions">
+        <a href="chat.html" class="btn btn-primary btn-lg animate-glow" id="cta-hero">
+          💬 Mulai Chat Sekarang
+        </a>
+        <a href="#tentang" class="btn btn-secondary">
+          📖 Tentang Kampus
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">6</div>
+          <div class="stat-label">Program Studi</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Jalur Masuk</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Online</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES SECTION ===== -->
+  <section class="section" id="fitur">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <div class="section-subtitle">Fitur</div>
+        <h2 class="section-title">Apa yang Bisa Ditanyakan?</h2>
+        <p class="section-desc">Bot kami siap menjawab berbagai pertanyaan seputar kampus Polimdo.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="card feature-card scroll-reveal delay-1">
+          <div class="card-icon">🤖</div>
+          <h3 class="card-title">Chatbot Pintar</h3>
+          <p class="card-text">Jawaban instan untuk pertanyaan seputar kampus, kapanpun kamu butuh.</p>
+        </div>
+
+        <div class="card feature-card scroll-reveal delay-2">
+          <div class="card-icon">🎓</div>
+          <h3 class="card-title">Info Jurusan</h3>
+          <p class="card-text">6 program studi tersedia. Cek akreditasi, biaya, dan prospek karir.</p>
+        </div>
+
+        <div class="card feature-card scroll-reveal delay-3">
+          <div class="card-icon">📅</div>
+          <h3 class="card-title">Jadwal Pendaftaran</h3>
+          <p class="card-text">Info SNBP, SNBT, dan Seleksi Mandiri lengkap dengan syarat dan tanggal.</p>
+        </div>
+
+        <div class="card feature-card scroll-reveal delay-4">
+          <div class="card-icon">💰</div>
+          <h3 class="card-title">Beasiswa</h3>
+          <p class="card-text">KIP Kuliah, Beasiswa Prestasi, PPA, dan beasiswa daerah tersedia.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TENTANG KAMPUS ===== -->
+  <section class="section" id="tentang">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <div class="section-subtitle">Tentang</div>
+        <h2 class="section-title">Politeknik Negeri Manado</h2>
+      </div>
+
+      <div class="about-content scroll-reveal">
+        <p class="about-text">
+          Politeknik Negeri Manado (Polimdo) adalah perguruan tinggi vokasi negeri di Kota Manado, Sulawesi Utara. Polimdo berkomitmen menghasilkan lulusan yang kompeten, inovatif, dan siap kerja melalui pendidikan berbasis praktik.
+        </p>
+
+        <div class="about-accordion">
+          <div class="accordion-item">
+            <button class="accordion-trigger">
+              <span>🎯 Visi & Misi</span>
+              <span class="accordion-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <p><strong>Visi:</strong> Menjadi politeknik unggul yang menghasilkan lulusan berkompeten, inovatif, dan berdaya saing global.</p>
+                <br>
+                <p><strong>Misi:</strong></p>
+                <ul style="list-style: disc; padding-left: 20px; margin-top: 8px;">
+                  <li>Menyelenggarakan pendidikan vokasi berkualitas tinggi.</li>
+                  <li>Melaksanakan penelitian terapan yang bermanfaat bagi masyarakat.</li>
+                  <li>Menjalin kerjasama dengan industri dan institusi.</li>
+                  <li>Membentuk lulusan berkarakter dan siap kerja.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger">
+              <span>🎓 Jurusan yang Tersedia</span>
+              <span class="accordion-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <ul style="list-style: none; padding: 0;">
+                  <li>🏗️ Teknik Sipil (D-III / D-IV)</li>
+                  <li>⚡ Teknik Elektro (D-III / D-IV)</li>
+                  <li>⚙️ Teknik Mesin (D-III / D-IV)</li>
+                  <li>📊 Akuntansi (D-III / D-IV)</li>
+                  <li>💼 Administrasi Bisnis (D-III / D-IV)</li>
+                  <li>🌴 Pariwisata (D-III / D-IV)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger">
+              <span>🏫 Fasilitas Kampus</span>
+              <span class="accordion-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <p>Polimdo dilengkapi dengan: Laboratorium Komputer, Perpustakaan, Lab Bahasa, Aula Serbaguna, Lapangan Olahraga, Masjid, Kantin, Bengkel Praktik, dan Hotspot WiFi.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ SECTION ===== -->
+  <section class="section" id="faq" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <div class="section-subtitle">FAQ</div>
+        <h2 class="section-title">Pertanyaan yang Sering Ditanyakan</h2>
+      </div>
+
+      <div class="faq-list scroll-reveal">
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span>Bagaimana cara mendaftar di Polimdo?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            <div class="accordion-body">Pendaftaran bisa melalui 3 jalur: SNBP (berdasarkan prestasi), SNBT (berdasarkan tes), dan Seleksi Mandiri. Kunjungi website resmi Polimdo untuk informasi lengkap.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span>Berapa biaya kuliah di Polimdo?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            <div class="accordion-body">Biaya kuliah bervariasi antara Rp 3.000.000 - 6.000.000 per semester tergantung jurusan dan jalur masuk. Tersedia juga beasiswa KIP Kuliah.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span>Apa saja jurusan yang tersedia?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            <div class="accordion-body">Polimdo memiliki 6 jurusan: Teknik Sipil, Teknik Elektro, Teknik Mesin, Akuntansi, Administrasi Bisnis, dan Pariwisata.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span>Apakah ada beasiswa yang tersedia?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            <div class="accordion-body">Ya! Tersedia KIP Kuliah, Beasiswa Prestasi, Beasiswa Daerah, dan Beasiswa PPA (Peningkatan Prestasi Akademik).</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span>Dimana lokasi kampus Polimdo?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            <div class="accordion-body">Polimdo berlokasi di Jl. Politeknik, Buha, Kec. Mapanget, Kota Manado, Sulawesi Utara 95252.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span>Kapan jadwal pendaftaran mahasiswa baru?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            <div class="accordion-body">SNBP: Januari-Februari, SNBT: Maret-Juni, Seleksi Mandiri: Juli-Agustus. Kunjungi website resmi untuk tanggal pasti.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-cta scroll-reveal">
+        <p class="text-secondary mb-md">Tidak menemukan jawaban yang kamu cari?</p>
+        <a href="chat.html" class="btn btn-primary">💬 Tanya Bot Polimdo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA SECTION ===== -->
+  <section class="section cta-section">
+    <div class="container">
+      <div class="cta-card scroll-reveal">
+        <h2 class="cta-title">Masih Ada Pertanyaan? 🤔</h2>
+        <p class="cta-text">Bot kami siap menjawab pertanyaan kamu seputar pendaftaran, jurusan, biaya, dan informasi kampus lainnya.</p>
+        <a href="chat.html" class="btn btn-primary btn-lg">💬 Mulai Chat Sekarang</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <span>🤖</span>
+        <span>Chatbot Polimdo</span>
+      </div>
+      <div class="footer-links">
+        <a href="#tentang" class="footer-link">Tentang</a>
+        <a href="#faq" class="footer-link">FAQ</a>
+        <a href="chat.html" class="footer-link">Chat</a>
+        <a href="https://polimdo.ac.id" target="_blank" rel="noopener" class="footer-link">Website Resmi</a>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 Politeknik Negeri Manado. Dibuat untuk Tugas MK Teknologi Web.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== FLOATING CHAT BUTTON ===== -->
+  <a href="chat.html" class="floating-chat-btn" id="floating-chat" aria-label="Buka chat">
+    💬
+  </a>
+
+  <!-- JS -->
+  <script src="js/landing.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+/* ============================================
+   ROUTES: CHAT — Chat Message & Session API
+   Thin route layer — delegates to services
+   ============================================ */
+
+import { Router } from "express";
+import * as chatSessionService from "../services/chatSessionService.js";
+import * as kontakService from "../services/kontakService.js";
+import { matchIntent } from "../services/chatEngine.js";
+import { resolveIntent } from "../services/intentResolver.js";
+import { validateBody, chatMessageSchema } from "../middleware/validate.js";
+
+const router = Router();
+
+/**
+ * POST /api/chat/session
+ * Create a new chat session
+ */
+router.post("/session", async (req, res) => {
+  try {
+    const ipAddress = req.ip || "";
+    const userAgent = req.headers["user-agent"] || "";
+    const session = await chatSessionService.createSession(ipAddress, userAgent);
+
+    res.status(201).json({
+      success: true,
+      session_id: session.sessionUuid,
+    });
+  } catch (error) {
+    console.error("Error creating session:", error);
+    res.status(500).json({ error: "Failed to create session" });
+  }
+});
+
+/**
+ * POST /api/chat/message
+ * Send a user message and get bot response
+ */
+router.post("/message", validateBody(chatMessageSchema), async (req, res) => {
+  try {
+    const { session_id, message } = req.body;
+
+    // Verify session exists
+    const session = await chatSessionService.getSessionByUuid(session_id);
+    if (!session) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    // Update session activity
+    await chatSessionService.touchSession(session_id);
+
+    // Log user message
+    await chatSessionService.logMessage(session.id, "user", message);
+
+    // Match intent
+    const match = await matchIntent(message);
+    let response;
+    let intentName: string | null = null;
+    let score = 0;
+
+    if (match) {
+      intentName = match.intent.name;
+      score = match.score;
+      response = await resolveIntent(match.intent);
+    } else {
+      // Fallback
+      const contacts = await kontakService.getAsObject();
+      response = {
+        type: "fallback",
+        text: "Maaf, saya belum mengerti pertanyaan tersebut. 🤔\n\nCoba gunakan kata kunci seperti: **jurusan**, **biaya**, **pendaftaran**, **beasiswa**, **lokasi**, atau **kontak**.\n\nAtau hubungi admin langsung:",
+        contacts,
+      };
+      intentName = "fallback";
+    }
+
+    // Log bot response
+    await chatSessionService.logMessage(
+      session.id,
+      "bot",
+      response.text,
+      intentName,
+      score,
+      response.type
+    );
+
+    res.json({ success: true, response });
+  } catch (error) {
+    console.error("Error processing message:", error);
+    res.status(500).json({ error: "Failed to process message" });
+  }
+});
+
+/**
+ * GET /api/chat/history/:sessionId
+ * Get chat history for a session
+ */
+router.get("/history/:sessionId", async (req, res) => {
+  try {
+    const session = await chatSessionService.getSessionByUuid(req.params.sessionId);
+    if (!session) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    const messages = await chatSessionService.getMessagesBySession(session.id);
+
+    res.json({
+      success: true,
+      session_id: req.params.sessionId,
+      messages: messages.map((m) => ({
+        sender: m.sender,
+        message: m.message,
+        matched_intent: m.matchedIntent,
+        created_at: m.createdAt,
+      })),
+    });
+  } catch (error) {
+    console.error("Error fetching history:", error);
+    res.status(500).json({ error: "Failed to fetch chat history" });
+  }
+});
+
+/**
+ * DELETE /api/chat/session/:sessionId
+ * Delete a chat session
+ */
+router.delete("/session/:sessionId", async (req, res) => {
+  try {
+    const deleted = await chatSessionService.deleteSession(req.params.sessionId);
+    if (!deleted) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+    res.json({ success: true, message: "Session deleted" });
+  } catch (error) {
+    console.error("Error deleting session:", error);
+    res.status(500).json({ error: "Failed to delete session" });
+  }
+});
+
+export default router;
