@@ -5,6 +5,7 @@
   "description": "Chatbot Polimdo — Asisten Virtual Kampus Politeknik Negeri Manado",
   "type": "module",
   "scripts": {
+    "build": "tsc --noEmit",
     "dev:server": "cd server && npm run dev",
     "db:seed": "cd server && npm run db:seed",
     "db:migrate": "cd server && npm run db:migrate"

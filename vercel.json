@@ -1,14 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "",
-  "outputDirectory": "",
   "functions": {
-    "api/index.ts": {
+    "api/**/*.ts": {
       "maxDuration": 10,
       "includeFiles": "server/src/**"
     }
-  },
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api" }
-  ]
+  }
 }
