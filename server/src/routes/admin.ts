@@ -6,6 +6,7 @@
 import { Router, type Request, type Response } from "express";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { invalidateCache } from "../services/chatEngine.js";
+import { invalidateCampusContextCache } from "../services/campusContextService.js";
 
 // Services
 import * as kampusService from "../services/kampusService.js";
@@ -97,6 +98,7 @@ function buildCrudRoutes(path: string, service: CrudService) {
     try {
       const item = await service.create(req.body);
       invalidateCache();
+      invalidateCampusContextCache();
       res.status(201).json({ success: true, data: item });
     } catch (error) {
       console.error(`Error creating ${path}:`, error);
@@ -112,6 +114,7 @@ function buildCrudRoutes(path: string, service: CrudService) {
       const item = await service.update(id, req.body);
       if (!item) return res.status(404).json({ error: "Not found" });
       invalidateCache();
+      invalidateCampusContextCache();
       res.json({ success: true, data: item });
     } catch (error) {
       console.error(`Error updating ${path}:`, error);
@@ -127,6 +130,7 @@ function buildCrudRoutes(path: string, service: CrudService) {
       const item = await service.remove(id);
       if (!item) return res.status(404).json({ error: "Not found" });
       invalidateCache();
+      invalidateCampusContextCache();
       res.json({ success: true, message: `${path} deleted` });
     } catch (error) {
       console.error(`Error deleting ${path}:`, error);
@@ -152,6 +156,7 @@ buildCrudRoutes("intents", intentsService);
 router.put("/kampus", async (req: Request, res: Response) => {
   try {
     const data = await kampusService.update(req.body);
+    invalidateCampusContextCache();
     res.json({ success: true, data });
   } catch (error) {
     console.error("Error updating kampus:", error);
