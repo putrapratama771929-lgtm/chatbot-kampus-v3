@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var sendBtn = document.getElementById('send-btn');
   var clearBtn = document.getElementById('clear-btn');
   var welcomeEl = document.getElementById('chat-welcome');
+  var statusDot = document.querySelector('.status-dot');
+  var statusTextEl = document.querySelector('.chat-header-status');
 
   var isProcessing = false;
 
@@ -19,9 +21,38 @@ document.addEventListener('DOMContentLoaded', function () {
   var API_BASE = window.location.origin + '/api';
   var sessionId = null;
   var useAPI = true;
+  var retryCount = 0;
+  var MAX_RETRIES = 2;
+
+  // === Connection Status UI ===
+  function setConnectionStatus(status) {
+    if (!statusDot || !statusTextEl) return;
+
+    statusDot.className = 'status-dot';
+    var label = '';
+
+    switch (status) {
+      case 'online':
+        statusDot.classList.add('status-online');
+        label = 'Online';
+        break;
+      case 'connecting':
+        statusDot.classList.add('status-connecting');
+        label = 'Menghubungkan...';
+        break;
+      case 'offline':
+        statusDot.classList.add('status-offline');
+        label = 'Offline Mode';
+        break;
+    }
+
+    statusTextEl.innerHTML = '<span class="status-dot ' + statusDot.className.replace('status-dot ', '') + '"></span>' + label;
+  }
 
   // === Initialize: Create session ===
   function initSession() {
+    setConnectionStatus('connecting');
+
     fetch(API_BASE + '/chat/session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
@@ -31,6 +62,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.success && data.session_id) {
           sessionId = data.session_id;
           useAPI = true;
+          retryCount = 0;
+          setConnectionStatus('online');
           console.log('✅ Chat session created:', sessionId);
         } else {
           throw new Error('Invalid session response');
@@ -39,6 +72,14 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(function (err) {
         console.warn('⚠️ API unavailable, using offline mode:', err.message);
         useAPI = false;
+        setConnectionStatus('offline');
+
+        // Auto-retry after delay
+        if (retryCount < MAX_RETRIES) {
+          retryCount++;
+          console.log('🔄 Retrying connection (' + retryCount + '/' + MAX_RETRIES + ')...');
+          setTimeout(initSession, 5000 * retryCount);
+        }
       });
   }
 
@@ -82,6 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
           console.error('API error:', err);
           removeTyping(typingEl);
           // Fallback to local engine
+          useAPI = false;
+          setConnectionStatus('offline');
           if (typeof ChatEngine !== 'undefined') {
             var response = ChatEngine.processMessage(text);
             renderBotResponse(response);
@@ -89,10 +132,12 @@ document.addEventListener('DOMContentLoaded', function () {
             appendMessage('bot', 'Maaf, terjadi kesalahan koneksi. Silakan coba lagi.');
           }
           isProcessing = false;
+          // Try to reconnect in background
+          setTimeout(initSession, 5000);
         });
     } else {
       // === Offline mode: use local chatEngine ===
-      var delay = 800 + Math.random() * 700;
+      var delay = 600 + Math.random() * 500;
       setTimeout(function () {
         removeTyping(typingEl);
         if (typeof ChatEngine !== 'undefined') {
@@ -115,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // === Append a simple message bubble ===
   function appendMessage(sender, text) {
     var messageDiv = document.createElement('div');
-    messageDiv.className = 'message message-' + sender;
+    messageDiv.className = 'message message-' + sender + ' message-enter';
 
     var avatarDiv = document.createElement('div');
     avatarDiv.className = 'message-avatar';
@@ -139,12 +184,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     chatMessages.appendChild(messageDiv);
     scrollToBottom();
+
+    // Trigger animation
+    requestAnimationFrame(function () {
+      messageDiv.classList.add('message-visible');
+    });
   }
 
   // === Render bot response (text, info-card, fallback) ===
   function renderBotResponse(response) {
     var messageDiv = document.createElement('div');
-    messageDiv.className = 'message message-bot';
+    messageDiv.className = 'message message-bot message-enter';
 
     var avatarDiv = document.createElement('div');
     avatarDiv.className = 'message-avatar';
@@ -175,6 +225,11 @@ document.addEventListener('DOMContentLoaded', function () {
     messageDiv.appendChild(contentDiv);
     chatMessages.appendChild(messageDiv);
     scrollToBottom();
+
+    // Trigger animation
+    requestAnimationFrame(function () {
+      messageDiv.classList.add('message-visible');
+    });
   }
 
   // === Build Info Card ===
@@ -190,9 +245,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var listDiv = document.createElement('div');
     listDiv.className = 'info-card-list';
 
-    card.items.forEach(function (item) {
+    card.items.forEach(function (item, index) {
       var itemDiv = document.createElement('div');
       itemDiv.className = 'info-card-item';
+      itemDiv.style.animationDelay = (index * 0.05) + 's';
 
       var iconSpan = document.createElement('span');
       iconSpan.className = 'item-icon';
@@ -270,11 +326,12 @@ document.addEventListener('DOMContentLoaded', function () {
     return typingDiv;
   }
 
-  // === Format text (bold, newlines) ===
+  // === Format text (bold, newlines, links) ===
   function formatText(text) {
     if (!text) return '';
     return text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
       .replace(/\n/g, '<br>');
   }
 

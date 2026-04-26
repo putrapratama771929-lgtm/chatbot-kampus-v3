@@ -1,0 +1,9 @@
+node_modules/
+server/node_modules/
+.env
+server/.env
+*.log
+server/dev-server*.log
+dist/
+server/dist/
+.vercel/
