@@ -60,6 +60,14 @@ interface CrudService {
   remove: (id: number) => Promise<any>;
 }
 
+function parseRouteId(value: string | string[] | undefined): number | null {
+  const raw = Array.isArray(value) ? value[0] : value;
+  if (!raw) return null;
+
+  const id = Number.parseInt(raw, 10);
+  return Number.isNaN(id) ? null : id;
+}
+
 function buildCrudRoutes(path: string, service: CrudService) {
   router.get(`/${path}`, async (_req: Request, res: Response) => {
     try {
@@ -73,7 +81,10 @@ function buildCrudRoutes(path: string, service: CrudService) {
 
   router.get(`/${path}/:id`, async (req: Request, res: Response) => {
     try {
-      const item = await service.getById(parseInt(req.params.id));
+      const id = parseRouteId(req.params.id);
+      if (id === null) return res.status(400).json({ error: "Invalid id" });
+
+      const item = await service.getById(id);
       if (!item) return res.status(404).json({ error: "Not found" });
       res.json({ success: true, data: item });
     } catch (error) {
@@ -95,7 +106,10 @@ function buildCrudRoutes(path: string, service: CrudService) {
 
   router.put(`/${path}/:id`, async (req: Request, res: Response) => {
     try {
-      const item = await service.update(parseInt(req.params.id), req.body);
+      const id = parseRouteId(req.params.id);
+      if (id === null) return res.status(400).json({ error: "Invalid id" });
+
+      const item = await service.update(id, req.body);
       if (!item) return res.status(404).json({ error: "Not found" });
       invalidateCache();
       res.json({ success: true, data: item });
@@ -107,7 +121,10 @@ function buildCrudRoutes(path: string, service: CrudService) {
 
   router.delete(`/${path}/:id`, async (req: Request, res: Response) => {
     try {
-      const item = await service.remove(parseInt(req.params.id));
+      const id = parseRouteId(req.params.id);
+      if (id === null) return res.status(400).json({ error: "Invalid id" });
+
+      const item = await service.remove(id);
       if (!item) return res.status(404).json({ error: "Not found" });
       invalidateCache();
       res.json({ success: true, message: `${path} deleted` });

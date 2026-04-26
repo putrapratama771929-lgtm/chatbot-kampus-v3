@@ -4,4 +4,5 @@ server/node_modules/
 server/.env
 *.log
 server/dev-server*.log
+dist/
 server/dist/
