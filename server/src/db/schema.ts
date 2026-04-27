@@ -91,15 +91,30 @@ export const kampusInfo = pgTable("kampus_info", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-/** Study Programs / Departments */
+/** Departments (Jurusan) — 6 departments at Polimdo */
 export const jurusan = pgTable("jurusan", {
   id: serial("id").primaryKey(),
   nama: text("nama").notNull(),
+  icon: text("icon").default("🎓"),
+  deskripsi: text("deskripsi"),
+  sortOrder: integer("sort_order").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+/** Study Programs (Prodi) — linked to a Jurusan */
+export const prodi = pgTable("prodi", {
+  id: serial("id").primaryKey(),
+  jurusanId: integer("jurusan_id")
+    .notNull()
+    .references(() => jurusan.id, { onDelete: "cascade" }),
+  nama: text("nama").notNull(),
   jenjang: text("jenjang").notNull(),
   akreditasi: text("akreditasi").default("B"),
-  icon: text("icon").default("🎓"),
   biaya: text("biaya"),
   deskripsi: text("deskripsi"),
+  icon: text("icon").default("🎓"),
   sortOrder: integer("sort_order").default(0),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
@@ -234,6 +249,8 @@ export const chatMessages = pgTable(
 
 export type Jurusan = typeof jurusan.$inferSelect;
 export type NewJurusan = typeof jurusan.$inferInsert;
+export type Prodi = typeof prodi.$inferSelect;
+export type NewProdi = typeof prodi.$inferInsert;
 export type Pendaftaran = typeof pendaftaran.$inferSelect;
 export type NewPendaftaran = typeof pendaftaran.$inferInsert;
 export type Beasiswa = typeof beasiswa.$inferSelect;
