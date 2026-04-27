@@ -4,6 +4,7 @@
    by querying the appropriate database table.
    ============================================ */
 
+import * as prodiService from "./prodiService.js";
 import * as jurusanService from "./jurusanService.js";
 import * as pendaftaranService from "./pendaftaranService.js";
 import * as beasiswaService from "./beasiswaService.js";
@@ -52,6 +53,8 @@ export async function resolveIntent(intent: Intent): Promise<BotResponse> {
       return resolveKontak(responseTemplate);
     case "akreditasi":
       return resolveAkreditasi();
+    case "visi_misi":
+      return resolveVisiMisi();
     default:
       if (responseTemplate) {
         return { type: responseType, text: responseTemplate };
@@ -61,33 +64,62 @@ export async function resolveIntent(intent: Intent): Promise<BotResponse> {
 }
 
 async function resolveJurusan(introText: string | null): Promise<BotResponse> {
-  const data = await jurusanService.getAllActive();
+  const allProdi = await prodiService.getAllWithJurusan();
+
+  // Group by jurusan
+  const grouped = new Map<string, Array<{ icon: string; nama: string; jenjang: string }>>();
+  for (const p of allProdi) {
+    const key = `${p.jurusanIcon} ${p.jurusanNama}`;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key)!.push({ icon: p.icon || "🎓", nama: p.nama, jenjang: p.jenjang });
+  }
+
+  const items: Array<{ icon: string; name: string; detail: string }> = [];
+  for (const [jurusanName, prodis] of grouped) {
+    items.push({
+      icon: jurusanName.split(" ")[0],
+      name: jurusanName.substring(jurusanName.indexOf(" ") + 1),
+      detail: prodis.map((p) => `${p.icon} ${p.nama} (${p.jenjang})`).join("\n"),
+    });
+  }
+
   return {
     type: "info-card",
-    text: introText || "Berikut daftar jurusan di Polimdo:",
+    text: introText || "Berikut daftar jurusan dan program studi di Polimdo:",
     card: {
-      title: "🎓 Program Studi Polimdo",
-      items: data.map((j) => ({
-        icon: j.icon || "🎓",
-        name: j.nama,
-        detail: `${j.jenjang} • Akreditasi ${j.akreditasi} • ${j.biaya}`,
-      })),
+      title: "🎓 Program Studi Polimdo (21 Prodi)",
+      items,
     },
   };
 }
 
 async function resolveBiaya(introText: string | null): Promise<BotResponse> {
-  const data = await jurusanService.getAllActive();
+  const allProdi = await prodiService.getAllWithJurusan();
+
+  // Group by jurusan
+  const grouped = new Map<string, Array<{ nama: string; jenjang: string; biaya: string | null }>>();
+  for (const p of allProdi) {
+    const key = p.jurusanNama!;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key)!.push({ nama: p.nama, jenjang: p.jenjang, biaya: p.biaya });
+  }
+
+  const items: Array<{ icon: string; name: string; detail: string }> = [];
+  for (const [jurusanName, prodis] of grouped) {
+    items.push({
+      icon: "💰",
+      name: jurusanName,
+      detail: prodis.map((p) => `${p.nama} (${p.jenjang}): ${p.biaya || "Hubungi kampus"}`).join("\n"),
+    });
+  }
+
   return {
     type: "info-card",
-    text: introText || "Berikut rincian biaya kuliah per semester:",
+    text: (introText || "Berikut rincian estimasi UKT per semester:") +
+      "\n\n📌 Jalur Mandiri: Ada tambahan SPI (Sumbangan Pengembangan Institusi).\n🎓 KIP-Kuliah: Dibebaskan dari biaya UKT.\n🔗 Registrasi: sim.polimdo.ac.id/spmb/",
     card: {
-      title: "💰 Biaya Kuliah per Semester",
-      items: data.map((j) => ({
-        icon: j.icon || "🎓",
-        name: j.nama,
-        detail: j.biaya || "-",
-      })),
+      title: "💰 Estimasi UKT per Semester",
+      items,
     },
   };
 }
@@ -96,7 +128,7 @@ async function resolvePendaftaran(introText: string | null): Promise<BotResponse
   const data = await pendaftaranService.getAllActive();
   return {
     type: "info-card",
-    text: introText || "Polimdo membuka pendaftaran melalui 3 jalur:",
+    text: introText || "Polimdo membuka pendaftaran melalui beberapa jalur:",
     card: {
       title: "📝 Jalur Pendaftaran",
       items: data.map((p) => ({
@@ -154,10 +186,41 @@ async function resolveKontak(introText: string | null): Promise<BotResponse> {
 }
 
 async function resolveAkreditasi(): Promise<BotResponse> {
-  const data = await jurusanService.getAllActive();
-  const list = data.map((j) => `${j.icon} ${j.nama} — Akreditasi **${j.akreditasi}**`).join("\n");
+  const allProdi = await prodiService.getAllWithJurusan();
+
+  // Group by jurusan
+  const grouped = new Map<string, Array<{ icon: string; nama: string; akreditasi: string | null }>>();
+  for (const p of allProdi) {
+    const key = `${p.jurusanIcon} ${p.jurusanNama}`;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key)!.push({ icon: p.icon || "🎓", nama: p.nama, akreditasi: p.akreditasi });
+  }
+
+  let list = "";
+  for (const [jurusanName, prodis] of grouped) {
+    list += `\n**${jurusanName}**\n`;
+    list += prodis.map((p) => `  ${p.icon} ${p.nama} — Akreditasi **${p.akreditasi || "-"}**`).join("\n");
+    list += "\n";
+  }
+
   return {
     type: "text",
-    text: `📋 **Akreditasi Program Studi Polimdo:**\n\n${list}\n\nPolimdo secara institusi terakreditasi **B** oleh BAN-PT.`,
+    text: `📋 **Akreditasi Program Studi Polimdo:**\n${list}\nPolimdo secara institusi terakreditasi **B** oleh BAN-PT.`,
+  };
+}
+
+async function resolveVisiMisi(): Promise<BotResponse> {
+  const k = await kampusService.get();
+  if (!k) {
+    return { type: "text", text: "Maaf, data visi misi belum tersedia." };
+  }
+
+  const misiList = Array.isArray(k.misi)
+    ? k.misi.map((m, i) => `${i + 1}. ${m}`).join("\n")
+    : "Data misi belum tersedia.";
+
+  return {
+    type: "text",
+    text: `🎯 **Visi Polimdo:**\n${k.visi}\n\n📋 **Misi:**\n${misiList}`,
   };
 }

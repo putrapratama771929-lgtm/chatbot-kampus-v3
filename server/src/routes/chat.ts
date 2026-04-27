@@ -76,7 +76,7 @@ router.post("/message", validateBody(chatMessageSchema), async (req, res) => {
     // Verify session exists
     const session = await chatSessionService.getSessionByUuid(session_id);
     if (!session) {
-      return res.status(404).json({ error: "Session not found" });
+      return res.status(404).json({ success: false, error: "Session not found" });
     }
 
     // Update session activity
@@ -120,7 +120,7 @@ router.post("/message", validateBody(chatMessageSchema), async (req, res) => {
     res.json({ success: true, response });
   } catch (error) {
     console.error("Error processing message:", error);
-    res.status(500).json({ error: "Failed to process message" });
+    res.status(500).json({ success: false, error: "Failed to process message" });
   }
 });
 

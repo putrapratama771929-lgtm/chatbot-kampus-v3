@@ -11,6 +11,7 @@ import { invalidateCampusContextCache } from "../services/campusContextService.j
 // Services
 import * as kampusService from "../services/kampusService.js";
 import * as jurusanService from "../services/jurusanService.js";
+import * as prodiService from "../services/prodiService.js";
 import * as pendaftaranService from "../services/pendaftaranService.js";
 import * as beasiswaService from "../services/beasiswaService.js";
 import * as fasilitasService from "../services/fasilitasService.js";
@@ -141,6 +142,7 @@ function buildCrudRoutes(path: string, service: CrudService) {
 
 // Register CRUD routes for each resource
 buildCrudRoutes("jurusan", jurusanService);
+buildCrudRoutes("prodi", prodiService);
 buildCrudRoutes("pendaftaran", pendaftaranService);
 buildCrudRoutes("beasiswa", beasiswaService);
 buildCrudRoutes("fasilitas", fasilitasService);

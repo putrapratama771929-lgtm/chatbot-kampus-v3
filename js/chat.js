@@ -109,13 +109,31 @@ document.addEventListener('DOMContentLoaded', function () {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: sessionId, message: text })
       })
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
+        .then(function (res) { 
+          // Check if response is not ok (e.g. 404, 500)
+          // We still parse JSON to get the error message
+          return res.json().then(function(data) {
+            return { status: res.status, data: data };
+          }); 
+        })
+        .then(function (result) {
           removeTyping(typingEl);
+          var data = result.data;
+          
           if (data.success && data.response) {
             renderBotResponse(data.response);
           } else {
-            appendMessage('bot', 'Maaf, terjadi kesalahan. Silakan coba lagi.');
+            // Handle specific errors
+            if (result.status === 404 || (data.error && data.error.toLowerCase().includes('session'))) {
+              appendMessage('bot', 'Sesi chat Anda telah berakhir. Membuat sesi baru...');
+              initSession(); // Re-initialize session
+              setTimeout(function() {
+                appendMessage('bot', 'Sesi baru telah dibuat. Silakan kirim ulang pertanyaan Anda.');
+              }, 1500);
+            } else {
+              var errorMsg = data.error || 'Maaf, terjadi kesalahan. Silakan coba lagi.';
+              appendMessage('bot', typeof errorMsg === 'string' ? errorMsg : 'Maaf, terjadi kesalahan. Silakan coba lagi.');
+            }
           }
           isProcessing = false;
         })

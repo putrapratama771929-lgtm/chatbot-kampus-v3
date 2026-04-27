@@ -1,0 +1,14 @@
+{
+  "status": "init",
+  "scope": "codebase",
+  "type": "frontend",
+  "localEndpoint": "https://chatbot-kampus-v3.vercel.app/",
+  "serverPort": 41890,
+  "executionArgs": {
+    "projectName": "chatbot-kampus v3",
+    "projectPath": "C:\\xampp\\htdocs\\chatbot-kampus v3",
+    "testIds": [],
+    "additionalInstruction": "Run the generated frontend tests against the public production URL https://chatbot-kampus-v3.vercel.app/.",
+    "serverMode": "production"
+  }
+}

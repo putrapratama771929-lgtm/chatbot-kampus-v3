@@ -6,6 +6,7 @@
 import { Router } from "express";
 import * as kampusService from "../services/kampusService.js";
 import * as jurusanService from "../services/jurusanService.js";
+import * as prodiService from "../services/prodiService.js";
 import * as pendaftaranService from "../services/pendaftaranService.js";
 import * as beasiswaService from "../services/beasiswaService.js";
 import * as fasilitasService from "../services/fasilitasService.js";
@@ -42,6 +43,16 @@ router.get("/jurusan/:id", async (req, res) => {
   } catch (error) {
     console.error("Error fetching jurusan:", error);
     res.status(500).json({ error: "Failed to fetch study program" });
+  }
+});
+
+router.get("/prodi", async (_req, res) => {
+  try {
+    const data = await prodiService.getAllWithJurusan();
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error("Error fetching prodi:", error);
+    res.status(500).json({ error: "Failed to fetch study programs" });
   }
 });
 
