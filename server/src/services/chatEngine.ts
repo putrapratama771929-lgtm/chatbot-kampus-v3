@@ -31,12 +31,29 @@ export interface MatchResult {
   score: number;
 }
 
+const COMPETITOR_UNIVERSITIES = [
+  "samratulangi", "sam ratulangi", "unsrat", 
+  "unima", "universitas negeri manado",
+  "ugm", "ui", "itb", "ipb", "unpad", "brawijaya", "undip", "unhas",
+  "universitas lain", "kampus lain", "universitas terbuka", "ut",
+  "binus", "telkom"
+];
+
 /**
  * Match a user message against database intents.
  * Returns the best matching intent + score, or null.
  */
 export async function matchIntent(text: string): Promise<MatchResult | null> {
   const lower = text.toLowerCase().trim();
+
+  // Bypass keyword matching if user is asking about other universities
+  // This forces the request to go to the AI fallback which can handle out-of-scope rejections politely
+  for (const comp of COMPETITOR_UNIVERSITIES) {
+    if (lower.includes(comp)) {
+      return null;
+    }
+  }
+
   const allIntents = await getIntents();
 
   let bestIntent: Intent | null = null;
