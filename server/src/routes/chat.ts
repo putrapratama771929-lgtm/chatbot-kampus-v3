@@ -10,6 +10,7 @@ import { matchIntent } from "../services/chatEngine.js";
 import { resolveIntent, type BotResponse } from "../services/intentResolver.js";
 import { askOpenRouter } from "../services/openRouterService.js";
 import { searchRelevantContext } from "../services/ragService.js";
+import { guardMessage } from "../services/messageGuardService.js";
 import { validateBody, chatMessageSchema } from "../middleware/validate.js";
 
 const router = Router();
@@ -96,13 +97,17 @@ router.post("/message", validateBody(chatMessageSchema), async (req, res) => {
     // Log user message
     await chatSessionService.logMessage(session.id, "user", message);
 
-    // Match intent
-    const match = await matchIntent(message);
+    // Reject clearly out-of-domain or unsafe messages before keyword/RAG routing.
+    const guard = guardMessage(message);
+    const match = guard ? null : await matchIntent(message);
     let response;
     let intentName: string | null = null;
     let score = 0;
 
-    if (match) {
+    if (guard) {
+      intentName = guard.intentName;
+      response = guard.response;
+    } else if (match) {
       intentName = match.intent.name;
       score = match.score;
       response = await resolveIntent(match.intent);
