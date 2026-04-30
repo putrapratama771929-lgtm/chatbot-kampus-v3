@@ -7,9 +7,13 @@
       "maxDuration": 10,
       "includeFiles": "server/src/**",
       "excludeFiles": "{server/models/**,server/data_kampus/**,server/node_modules/**,testsprite_tests/**}"
+    },
+    "api/health.ts": {
+      "maxDuration": 5
     }
   },
   "rewrites": [
+    { "source": "/api/health", "destination": "/api/health" },
     { "source": "/api/(.*)", "destination": "/api" }
   ]
 }
