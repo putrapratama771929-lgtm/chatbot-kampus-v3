@@ -12,6 +12,7 @@ import {
   timestamp,
   json,
   real,
+  vector,
   index,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
@@ -201,6 +202,55 @@ export const intents = pgTable("intents", {
 });
 
 // ══════════════════════════════════════════════
+// RAG KNOWLEDGE BASE
+// ══════════════════════════════════════════════
+
+export const knowledgeSources = pgTable(
+  "knowledge_sources",
+  {
+    id: serial("id").primaryKey(),
+    sourceKey: text("source_key").notNull(),
+    title: text("title").notNull(),
+    sourceType: text("source_type").notNull().default("admin_text"),
+    referenceTable: text("reference_table"),
+    referenceId: text("reference_id"),
+    content: text("content").notNull(),
+    contentHash: text("content_hash").notNull(),
+    metadata: json("metadata").$type<Record<string, unknown>>(),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => ({
+    sourceKeyIdx: uniqueIndex("knowledge_sources_source_key_idx").on(table.sourceKey),
+    sourceRefIdx: index("knowledge_sources_ref_idx").on(table.sourceType, table.referenceTable, table.referenceId),
+    activeIdx: index("knowledge_sources_active_idx").on(table.isActive),
+  })
+);
+
+export const knowledgeChunks = pgTable(
+  "knowledge_chunks",
+  {
+    id: serial("id").primaryKey(),
+    sourceId: integer("source_id")
+      .notNull()
+      .references(() => knowledgeSources.id, { onDelete: "cascade" }),
+    chunkIndex: integer("chunk_index").notNull(),
+    content: text("content").notNull(),
+    contentHash: text("content_hash").notNull(),
+    embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+    metadata: json("metadata").$type<Record<string, unknown>>(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => ({
+    sourceChunkIdx: uniqueIndex("knowledge_chunks_source_chunk_idx").on(table.sourceId, table.chunkIndex),
+    sourceIdx: index("knowledge_chunks_source_idx").on(table.sourceId),
+    embeddingIdx: index("knowledge_chunks_embedding_idx").using("hnsw", table.embedding.op("vector_cosine_ops")),
+  })
+);
+
+// ══════════════════════════════════════════════
 // ANALYTICS — Chat Sessions & Messages
 // ══════════════════════════════════════════════
 
@@ -263,5 +313,9 @@ export type Kontak = typeof kontak.$inferSelect;
 export type NewKontak = typeof kontak.$inferInsert;
 export type Intent = typeof intents.$inferSelect;
 export type NewIntent = typeof intents.$inferInsert;
+export type KnowledgeSource = typeof knowledgeSources.$inferSelect;
+export type NewKnowledgeSource = typeof knowledgeSources.$inferInsert;
+export type KnowledgeChunk = typeof knowledgeChunks.$inferSelect;
+export type NewKnowledgeChunk = typeof knowledgeChunks.$inferInsert;
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type ChatMessage = typeof chatMessages.$inferSelect;

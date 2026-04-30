@@ -7,6 +7,7 @@ import { Router, type Request, type Response } from "express";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { invalidateCache } from "../services/chatEngine.js";
 import { invalidateCampusContextCache } from "../services/campusContextService.js";
+import { validateBody, knowledgeSourceSchema, knowledgeSourceUpdateSchema } from "../middleware/validate.js";
 
 // Services
 import * as kampusService from "../services/kampusService.js";
@@ -19,6 +20,8 @@ import * as faqService from "../services/faqService.js";
 import * as kontakService from "../services/kontakService.js";
 import * as intentsService from "../services/intentsService.js";
 import * as chatSessionService from "../services/chatSessionService.js";
+import * as knowledgeSyncService from "../services/knowledgeSyncService.js";
+import * as ragService from "../services/ragService.js";
 
 const router = Router();
 
@@ -153,6 +156,69 @@ buildCrudRoutes("intents", intentsService);
 // ==========================================
 // SPECIAL ROUTES
 // ==========================================
+
+/** POST /api/admin/knowledge/sync — Sync database content into RAG knowledge base */
+router.post("/knowledge/sync", async (_req: Request, res: Response) => {
+  try {
+    const summary = await knowledgeSyncService.syncDatabaseKnowledge();
+    res.json({ success: true, data: summary });
+  } catch (error) {
+    console.error("Error syncing knowledge:", error);
+    res.status(500).json({ error: "Failed to sync knowledge" });
+  }
+});
+
+/** GET /api/admin/knowledge/sources — List RAG sources */
+router.get("/knowledge/sources", async (_req: Request, res: Response) => {
+  try {
+    const sources = await ragService.listSources();
+    res.json({ success: true, data: sources });
+  } catch (error) {
+    console.error("Error fetching knowledge sources:", error);
+    res.status(500).json({ error: "Failed to fetch knowledge sources" });
+  }
+});
+
+/** POST /api/admin/knowledge/sources — Create manual admin text source */
+router.post("/knowledge/sources", validateBody(knowledgeSourceSchema), async (req: Request, res: Response) => {
+  try {
+    const result = await ragService.createAdminSource(req.body);
+    res.status(201).json({ success: true, data: result });
+  } catch (error) {
+    console.error("Error creating knowledge source:", error);
+    res.status(500).json({ error: "Failed to create knowledge source" });
+  }
+});
+
+/** PUT /api/admin/knowledge/sources/:id — Update source and re-embed if needed */
+router.put("/knowledge/sources/:id", validateBody(knowledgeSourceUpdateSchema), async (req: Request, res: Response) => {
+  try {
+    const id = parseRouteId(req.params.id);
+    if (id === null) return res.status(400).json({ error: "Invalid id" });
+
+    const result = await ragService.updateSource(id, req.body);
+    if (!result) return res.status(404).json({ error: "Not found" });
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error("Error updating knowledge source:", error);
+    res.status(500).json({ error: "Failed to update knowledge source" });
+  }
+});
+
+/** DELETE /api/admin/knowledge/sources/:id — Deactivate source and remove chunks */
+router.delete("/knowledge/sources/:id", async (req: Request, res: Response) => {
+  try {
+    const id = parseRouteId(req.params.id);
+    if (id === null) return res.status(400).json({ error: "Invalid id" });
+
+    const source = await ragService.deactivateSource(id);
+    if (!source) return res.status(404).json({ error: "Not found" });
+    res.json({ success: true, data: source });
+  } catch (error) {
+    console.error("Error deleting knowledge source:", error);
+    res.status(500).json({ error: "Failed to delete knowledge source" });
+  }
+});
 
 /** PUT /api/admin/kampus — Update campus info */
 router.put("/kampus", async (req: Request, res: Response) => {

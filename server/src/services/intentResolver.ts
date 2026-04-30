@@ -16,6 +16,7 @@ import type { Intent } from "../db/schema.js";
 export interface BotResponse {
   type: string;
   text: string;
+  sources?: Array<{ id: number; title: string; sourceType: string }>;
   card?: {
     title: string;
     items: Array<{ icon: string; name: string; detail: string }>;

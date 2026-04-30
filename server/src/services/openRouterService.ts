@@ -9,7 +9,7 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const DEFAULT_MODEL = "google/gemini-2.5-flash";
 const DEFAULT_TIMEOUT_MS = 12_000;
 
-interface OpenRouterMessage {
+export interface OpenRouterMessage {
   role: "system" | "user" | "assistant";
   content: string;
 }
