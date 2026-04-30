@@ -5,7 +5,8 @@
   "functions": {
     "api/index.ts": {
       "maxDuration": 10,
-      "includeFiles": "server/src/**"
+      "includeFiles": "server/src/**",
+      "excludeFiles": "{server/models/**,server/data_kampus/**,server/node_modules/**,testsprite_tests/**}"
     }
   },
   "rewrites": [

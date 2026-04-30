@@ -1,14 +1,18 @@
 {
-  "status": "init",
-  "scope": "codebase",
+  "status": "commited",
   "type": "frontend",
-  "localEndpoint": "https://chatbot-kampus-v3.vercel.app/",
-  "serverPort": 41890,
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3001",
   "executionArgs": {
     "projectName": "chatbot-kampus v3",
     "projectPath": "C:\\xampp\\htdocs\\chatbot-kampus v3",
     "testIds": [],
-    "additionalInstruction": "Run the generated frontend tests against the public production URL https://chatbot-kampus-v3.vercel.app/.",
-    "serverMode": "production"
-  }
+    "additionalInstruction": "Run the frontend tests against the local app at http://localhost:3001. The app is already running in development mode. Focus on core landing page and chat workflows.",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-Pm5nZF0nZxmrbJSmSHo0gKErXyiuIiSdi0PZw1EuIlBpaW-RXgE6ujkLuDJJzxFya7HmlE7uee_CeCG-ErrzS0YOOdBBQmDWbf13pFxlOY0uTsqIqDVruJWyv8gS23_KcAI"
+    }
+  },
+  "serverPort": 49960,
+  "proxy": "http://145cd83c-8dbd-46a5-8768-41181f5c5d80:2CqqBDXqsKr8UaoI0yzUG4wYg36VcLp9@tun.testsprite.com:8080"
 }

@@ -30,16 +30,16 @@ async def run_test():
         page = await context.new_page()
 
         # Interact with the page elements to simulate user flow
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/
-        await page.goto("https://chatbot-kampus-v3.vercel.app/")
+        # -> Navigate to http://localhost:3001
+        await page.goto("http://localhost:3001")
         
-        # -> Click the floating 'Buka chat' button (element index 636) to open the chat panel so we can inspect the input and send control.
+        # -> Open the chat widget by clicking the floating chat button (aria-label=Buka chat).
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/a').nth(0)
         await asyncio.sleep(3); await elem.click()
         
-        # -> Focus the chat input (element index 733) and press Enter while it is empty, then observe whether a new user message appears and whether the send control remains disabled.
+        # -> Focus the chat input (click input index 739) so it has focus (no text), then press Enter to attempt sending, then wait for UI update and verify no new user message was appended and send control remains disabled.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/div/div[3]/div/input').nth(0)

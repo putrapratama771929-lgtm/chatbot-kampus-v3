@@ -30,28 +30,28 @@ async def run_test():
         page = await context.new_page()
 
         # Interact with the page elements to simulate user flow
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/
-        await page.goto("https://chatbot-kampus-v3.vercel.app/")
+        # -> Navigate to http://localhost:3001
+        await page.goto("http://localhost:3001")
         
-        # -> Open the chat widget by clicking the floating chat button so the chat input and controls appear.
+        # -> Open the chat widget by clicking the floating chat button (index 645) and wait for the chat panel to appear.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/a').nth(0)
         await asyncio.sleep(3); await elem.click()
         
-        # -> Type the first test message into the chat input (index 814) and send it to start the conversation.
+        # -> Send the first chat message using the text input (index 660).
         frame = context.pages[-1]
         # Input text
         elem = frame.locator('xpath=/html/body/div/div[3]/div/input').nth(0)
-        await asyncio.sleep(3); await elem.fill('Apa saja jurusan yang ditawarkan?')
+        await asyncio.sleep(3); await elem.fill('Apa saja jurusan yang tersedia di Polimdo?')
         
-        # -> Type and send the second short question into the chat input to produce another assistant response, then clear the chat and verify the welcome state is restored.
+        # -> Send the second chat message (using input index 660), wait for the assistant response, then click the clear chat control (index 739).
         frame = context.pages[-1]
         # Input text
         elem = frame.locator('xpath=/html/body/div/div[3]/div/input').nth(0)
-        await asyncio.sleep(3); await elem.fill('Bagaimana proses pendaftaran?')
+        await asyncio.sleep(3); await elem.fill('Berapa biaya kuliah di Polimdo?')
         
-        # -> Click the clear chat control to remove the conversation and then verify the welcome state is restored (no chat bubbles).
+        # -> Click the clear chat control (index 739) to remove the conversation and restore the initial welcome state.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/div/header/div[2]/button').nth(0)

@@ -30,10 +30,10 @@ async def run_test():
         page = await context.new_page()
 
         # Interact with the page elements to simulate user flow
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/
-        await page.goto("https://chatbot-kampus-v3.vercel.app/")
+        # -> Navigate to http://localhost:3001
+        await page.goto("http://localhost:3001")
         
-        # -> Click the floating chat button to open the chat panel so initialization can complete and the connected status + input readiness can be observed.
+        # -> Click the floating 'Buka chat' button to open the chat widget, wait for it to initialize, then check for an online/connected indicator and that the chat input is enabled/ready.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/a').nth(0)

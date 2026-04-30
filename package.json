@@ -8,7 +8,10 @@
     "build": "tsc --noEmit",
     "dev:server": "cd server && npm run dev",
     "db:seed": "cd server && npm run db:seed",
-    "db:migrate": "cd server && npm run db:migrate"
+    "db:migrate": "cd server && npm run db:migrate",
+    "rag:sync": "cd server && npm run rag:sync",
+    "rag:ingest-pdfs": "cd server && npm run rag:ingest-pdfs",
+    "rag:evaluate": "cd server && npm run rag:evaluate"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.9",

@@ -1,10 +1,11 @@
 node_modules/
 server/node_modules/
+dist/
+server/dist/
 .env
 server/.env
 *.log
-server/dev-server*.log
-dist/
-server/dist/
-.vercel/
+server/*.log
 server/models/
+server/data_kampus/
+testsprite_tests/

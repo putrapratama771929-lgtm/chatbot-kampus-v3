@@ -30,16 +30,21 @@ async def run_test():
         page = await context.new_page()
 
         # Interact with the page elements to simulate user flow
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/
-        await page.goto("https://chatbot-kampus-v3.vercel.app/")
+        # -> Navigate to http://localhost:3001
+        await page.goto("http://localhost:3001")
         
-        # -> Click the dark mode toggle (moon icon) to switch the theme (element index 82).
+        # -> Click the theme toggle button (index 115) to enable dark mode.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/nav/div/div[2]/button').nth(0)
         await asyncio.sleep(3); await elem.click()
         
-        # -> Click the '🎯 Visi & Misi' campus accordion button (index 151) to open it.
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/section[3]/div/div[2]/div/div/button').nth(0)
+        await asyncio.sleep(3); await elem.click()
+        
+        # -> Collapse the open 'Visi & Misi' accordion by clicking its button (index 321), then proceed to open/close another campus accordion, a FAQ item, and click the hero 'Mulai Chat Sekarang' CTA to verify theme persistence on the chat page.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/section[3]/div/div[2]/div/div/button').nth(0)
@@ -47,34 +52,18 @@ async def run_test():
         
         frame = context.pages[-1]
         # Click element
-        elem = frame.locator('xpath=/html/body/section[3]/div/div[2]/div/div/button').nth(0)
-        await asyncio.sleep(3); await elem.click()
-        
-        # -> Close the open campus accordion by opening a different campus accordion (index 169), then open and close a FAQ item (index 201), then click the hero CTA (index 107) to navigate to the chat page (stop after navigation so the page change can be observed).
-        frame = context.pages[-1]
-        # Click element
         elem = frame.locator('xpath=/html/body/section[3]/div/div[2]/div/div[2]/button').nth(0)
         await asyncio.sleep(3); await elem.click()
         
         frame = context.pages[-1]
         # Click element
-        elem = frame.locator('xpath=/html/body/section[4]/div/div[2]/div/button').nth(0)
-        await asyncio.sleep(3); await elem.click()
-        
-        # -> Close the open campus accordion by clicking index 169, close the open FAQ item by clicking index 201, then click the call-to-action to start chat (index 83) and verify navigation to the chat page and that the selected (dark) theme persists.
-        frame = context.pages[-1]
-        # Click element
         elem = frame.locator('xpath=/html/body/section[3]/div/div[2]/div/div[2]/button').nth(0)
         await asyncio.sleep(3); await elem.click()
         
+        # -> Click the hero '💬 Mulai Chat Sekarang' CTA (index 187) to navigate to the chat page and then verify the dark theme persists.
         frame = context.pages[-1]
         # Click element
-        elem = frame.locator('xpath=/html/body/section[4]/div/div[2]/div/button').nth(0)
-        await asyncio.sleep(3); await elem.click()
-        
-        frame = context.pages[-1]
-        # Click element
-        elem = frame.locator('xpath=/html/body/nav/div/div[2]/a').nth(0)
+        elem = frame.locator('xpath=/html/body/section/div[2]/div[2]/a').nth(0)
         await asyncio.sleep(3); await elem.click()
         
         # --> Test passed — verified by AI agent

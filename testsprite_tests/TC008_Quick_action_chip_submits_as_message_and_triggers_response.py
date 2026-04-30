@@ -30,13 +30,16 @@ async def run_test():
         page = await context.new_page()
 
         # Interact with the page elements to simulate user flow
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/
-        await page.goto("https://chatbot-kampus-v3.vercel.app/")
+        # -> Navigate to http://localhost:3001
+        await page.goto("http://localhost:3001")
         
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/chat.html (follow the explicit step to load the chat page).
-        await page.goto("https://chatbot-kampus-v3.vercel.app/chat.html")
+        # -> Open the chat by clicking the floating chat button so quick-action topic chips are visible.
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/a').nth(0)
+        await asyncio.sleep(3); await elem.click()
         
-        # -> Click the 'Jurusan' quick-action chip (index 789), wait for the bot response to render, then extract the latest user and bot messages to verify the interaction.
+        # -> Click the 'Jurusan' quick-action topic chip so a user message is sent, then wait for the bot response to render and verify both user message and bot reply appear.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/div/div[2]/button').nth(0)

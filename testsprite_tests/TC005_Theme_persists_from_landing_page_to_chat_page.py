@@ -30,10 +30,10 @@ async def run_test():
         page = await context.new_page()
 
         # Interact with the page elements to simulate user flow
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/
-        await page.goto("https://chatbot-kampus-v3.vercel.app/")
+        # -> Navigate to http://localhost:3001
+        await page.goto("http://localhost:3001")
         
-        # -> Toggle the theme by clicking the theme button (index 128), then click the hero call-to-action to start chat (index 16).
+        # -> Click the theme toggle (element index 83) on the landing page to switch theme, then click the 'Mulai Chat Sekarang' CTA (element index 109) to go to the chat page and verify the theme persists.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/nav/div/div[2]/button').nth(0)

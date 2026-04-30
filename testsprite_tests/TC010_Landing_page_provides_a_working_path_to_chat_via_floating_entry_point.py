@@ -30,10 +30,10 @@ async def run_test():
         page = await context.new_page()
 
         # Interact with the page elements to simulate user flow
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/
-        await page.goto("https://chatbot-kampus-v3.vercel.app/")
+        # -> Navigate to http://localhost:3001
+        await page.goto("http://localhost:3001")
         
-        # -> Click the floating chat entry point (element index 636) to open the chat page and verify navigation.
+        # -> Click the floating chat entry point (element index 643) to open the chat page.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/a').nth(0)

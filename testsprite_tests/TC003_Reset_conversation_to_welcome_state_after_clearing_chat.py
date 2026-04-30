@@ -30,19 +30,19 @@ async def run_test():
         page = await context.new_page()
 
         # Interact with the page elements to simulate user flow
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/
-        await page.goto("https://chatbot-kampus-v3.vercel.app/")
+        # -> Navigate to http://localhost:3001
+        await page.goto("http://localhost:3001")
         
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/chat.html and wait for the chat UI to load so interactive elements appear.
-        await page.goto("https://chatbot-kampus-v3.vercel.app/chat.html")
+        # -> Navigate to http://localhost:3001/chat.html to open the chat UI
+        await page.goto("http://localhost:3001/chat.html")
         
-        # -> Fill the chat input (index 383) with a short question so the chat can be sent.
+        # -> Type a short question into the chat input and send it, then wait for the assistant response.
         frame = context.pages[-1]
         # Input text
         elem = frame.locator('xpath=/html/body/div/div[3]/div/input').nth(0)
-        await asyncio.sleep(3); await elem.fill('Apa saja jurusan yang tersedia?')
+        await asyncio.sleep(3); await elem.fill('Apa saja jurusan di Polimdo?')
         
-        # -> Click the clear chat control (index 483) to clear the conversation and then verify the UI returned to the welcome state and the input is reset.
+        # -> Click the clear chat control to remove the conversation, wait for the UI to update, then extract the chat messages content and the chat input value to verify the welcome state and input reset.
         frame = context.pages[-1]
         # Click element
         elem = frame.locator('xpath=/html/body/div/header/div[2]/button').nth(0)

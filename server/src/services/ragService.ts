@@ -9,7 +9,7 @@ import { desc, eq } from "drizzle-orm";
 import { embedTexts } from "./embeddingService.js";
 
 const DEFAULT_TOP_K = 5;
-const DEFAULT_MIN_SCORE = 0.65;
+const DEFAULT_MIN_SCORE = 0.5;
 const MAX_CHUNK_CHARS = 900;
 const CHUNK_OVERLAP_CHARS = 120;
 

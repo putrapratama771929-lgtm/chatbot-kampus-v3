@@ -57,7 +57,7 @@ export async function askOpenRouter(messages: OpenRouterMessage[]): Promise<BotR
         model: process.env.OPENROUTER_MODEL || DEFAULT_MODEL,
         messages,
         max_tokens: 450,
-        temperature: 0.3,
+        temperature: 0.1, // Lower temperature for more deterministic RAG responses
       }),
     });
 

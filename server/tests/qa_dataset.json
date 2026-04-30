@@ -1,0 +1,22 @@
+[
+  {
+    "query": "Berapa UKT untuk jurusan Teknik Informatika?",
+    "expected_keywords": ["UKT", "Teknik Informatika", "biaya"]
+  },
+  {
+    "query": "Apa saja syarat pendaftaran mahasiswa baru jalur mandiri?",
+    "expected_keywords": ["syarat", "mandiri", "pendaftaran"]
+  },
+  {
+    "query": "Bagaimana prosedur pengajuan cuti akademik?",
+    "expected_keywords": ["cuti", "akademik", "prosedur", "biro administrasi"]
+  },
+  {
+    "query": "Dimana lokasi perpustakaan Polimdo?",
+    "expected_keywords": ["lokasi", "perpustakaan", "gedung"]
+  },
+  {
+    "query": "Siapa rektor Polimdo saat ini?",
+    "expected_keywords": ["direktur", "polimdo", "nama"]
+  }
+]

@@ -23,11 +23,41 @@ export function isEmbeddingEnabled() {
   return Boolean(process.env.OPENROUTER_API_KEY);
 }
 
+// Kamus Sinonim Kampus
+const CAMPUS_SYNONYMS: Record<string, string> = {
+  "krs": "kartu rencana studi",
+  "sks": "satuan kredit semester",
+  "ukt": "uang kuliah tunggal",
+  "dospem": "dosen pembimbing",
+  "kaprodi": "ketua program studi",
+  "kajur": "ketua jurusan",
+  "maba": "mahasiswa baru",
+  "ipk": "indeks prestasi kumulatif",
+  "perpus": "perpustakaan",
+  "rektor": "direktur pimpinan kampus",
+  "rektorat": "direktorat kantor pimpinan kampus",
+  "baak": "biro administrasi akademik",
+  "kampus": "politeknik negeri manado polimdo",
+};
+
+function preprocessText(text: string): string {
+  let processed = text;
+  for (const [key, value] of Object.entries(CAMPUS_SYNONYMS)) {
+    // Replace whole words only, case insensitive
+    const regex = new RegExp(`\\b${key}\\b`, "gi");
+    processed = processed.replace(regex, `${key} ${value}`);
+  }
+  return processed;
+}
+
 export async function embedTexts(texts: string[]): Promise<number[][] | null> {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey || texts.length === 0) {
     return null;
   }
+
+  // Pre-process texts for Indonesian campus synonyms
+  const processedTexts = texts.map(preprocessText);
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
@@ -44,7 +74,7 @@ export async function embedTexts(texts: string[]): Promise<number[][] | null> {
       },
       body: JSON.stringify({
         model: process.env.OPENROUTER_EMBEDDING_MODEL || DEFAULT_EMBEDDING_MODEL,
-        input: texts,
+        input: processedTexts,
       }),
     });
 

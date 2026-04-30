@@ -30,13 +30,16 @@ async def run_test():
         page = await context.new_page()
 
         # Interact with the page elements to simulate user flow
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/
-        await page.goto("https://chatbot-kampus-v3.vercel.app/")
+        # -> Navigate to http://localhost:3001
+        await page.goto("http://localhost:3001")
         
-        # -> Navigate to https://chatbot-kampus-v3.vercel.app/chat.html to reach the chat UI (explicit navigation requested by the test).
-        await page.goto("https://chatbot-kampus-v3.vercel.app/chat.html")
+        # -> Click the floating chat button to open the chat widget.
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/a').nth(0)
+        await asyncio.sleep(3); await elem.click()
         
-        # -> Fill the chat input with 'Biaya kuliah berapa?' and submit it (press Enter) to trigger the bot response and typing indicator.
+        # -> Type the message 'Biaya kuliah berapa?' into the chat input and submit it, then observe the UI: first capture the page text to detect a typing indicator, wait for the bot response, and capture the page text again to confirm the typing indicator is gone and a bot message is present.
         frame = context.pages[-1]
         # Input text
         elem = frame.locator('xpath=/html/body/div/div[3]/div/input').nth(0)
