@@ -30,6 +30,47 @@ const OTHER_CAMPUSES = [
   /\bundip\b/,
   /\bbinus\b/,
   /\btelkom\b/,
+  /\bharvard\b/,
+  /\bharvard\s+university\b/,
+  /\bmit\b/,
+  /\bmassachusetts\s+institute\s+of\s+technology\b/,
+  /\bstanford\b/,
+  /\bstanford\s+university\b/,
+  /\boxford\b/,
+  /\buniversity\s+of\s+oxford\b/,
+  /\bcambridge\b/,
+  /\buniversity\s+of\s+cambridge\b/,
+];
+
+const CAMPUS_TOPIC_PATTERNS = [
+  /\bukt\b/,
+  /\bbiaya\b/,
+  /\bkuliah\b/,
+  /\bpendaftaran\b/,
+  /\bdaftar\b/,
+  /\bjurusan\b/,
+  /\bprogram\s+studi\b/,
+  /\bprodi\b/,
+  /\bwisuda\b/,
+  /\bpassing\s+grade\b/,
+];
+
+const NON_POLIMDO_INSTITUTION_MARKERS = [
+  /\buniversitas\b/,
+  /\buniversity\b/,
+  /\binstitut\b/,
+  /\binstitute\b/,
+  /\bpoliteknik\b/,
+  /\bharvard\b/,
+  /\bmit\b/,
+  /\bstanford\b/,
+  /\boxford\b/,
+  /\bcambridge\b/,
+];
+
+const POLIMDO_MARKERS = [
+  /\bpolimdo\b/,
+  /\bpoliteknik\s+negeri\s+manado\b/,
 ];
 
 const UNSAFE_PATTERNS = [
@@ -105,7 +146,7 @@ export function guardMessage(message: string): GuardResult | null {
     };
   }
 
-  if (matchesAny(normalized, OTHER_CAMPUSES)) {
+  if (matchesAny(normalized, OTHER_CAMPUSES) || isOtherInstitutionQuestion(normalized)) {
     return {
       intentName: "other_campus_rejection",
       response: {
@@ -155,4 +196,12 @@ function normalize(message: string) {
 
 function matchesAny(value: string, patterns: RegExp[]) {
   return patterns.some((pattern) => pattern.test(value));
+}
+
+function isOtherInstitutionQuestion(value: string) {
+  return (
+    matchesAny(value, CAMPUS_TOPIC_PATTERNS) &&
+    matchesAny(value, NON_POLIMDO_INSTITUTION_MARKERS) &&
+    !matchesAny(value, POLIMDO_MARKERS)
+  );
 }
